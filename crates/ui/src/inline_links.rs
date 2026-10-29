@@ -122,6 +122,8 @@ impl RenderOnce for InlineLinks {
                             let handler = on_click.clone();
                             item.hover(|style| style.underline())
                                 .cursor_pointer()
+                                .role(gpui::accesskit::Role::Link)
+                                .aria_label(label.clone())
                                 .when_some(handler, |this, handler| {
                                     this.on_click(move |_, _, cx| {
                                         cx.stop_propagation();

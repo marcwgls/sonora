@@ -180,9 +180,9 @@ fn arrow(
     // the active wash is translucent, so it is laid over the button's own fill to keep the
     // cards under the arrow hidden
     let hover = theme.secondary.blend(theme.secondary_active);
-    let (side, icon) = match forward {
-        true => ("forward", "icons/chevron-right.svg"),
-        false => ("back", "icons/chevron-left.svg"),
+    let (side, icon, name) = match forward {
+        true => ("forward", "icons/chevron-right.svg", "common-next"),
+        false => ("back", "icons/chevron-left.svg", "common-previous"),
     };
     let (scroll, glide) = (scroll.clone(), glide.clone());
     let inset = -ARROW / 2.;
@@ -211,8 +211,11 @@ fn arrow(
                 .size(CHEVRON)
                 .text_color(theme.foreground),
         )
+        // a faded out arrow does nothing, so only a wanted one reaches the accessibility tree
         .when(wanted, |this| {
-            this.cursor_pointer()
+            this.role(gpui::accesskit::Role::Button)
+                .aria_label(i18n::lookup(name, None))
+                .cursor_pointer()
                 .occlude()
                 .hover(move |style| style.bg(hover))
                 .on_click(move |_, window, _| {
